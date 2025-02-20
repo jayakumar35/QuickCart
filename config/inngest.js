@@ -13,42 +13,39 @@ export const syncUserCreation = inngest.createFunction(
     {
         event: 'clerk/user.created',
     },
-        async ({ event }) => {
-           const {id,first_name, last_name, email_addresses, image_url} = event.data;
-        
-            const userData = {
-                _id: id,
-                email: email_addresses[0].email_address,
-                name: first_name + '' + last_name,
-                imageUrl: image_url,
+    async ({ event }) => {
+        const { id, first_name, last_name, email_addresses, image_url } = event.data;
 
-            }
-            await dbConnect()
-            await User.create(userData)
-        }
-    
-)
+        const userData = {
+            _id: id,
+            email: email_addresses[0].email_address,
+            name: first_name + ' ' + last_name,
+            imageUrl: image_url,
+        };
+        await dbConnect();
+        await User.create(userData);
+    }
+);
 
 // inngest function to update user data in a database
 export const sycnUserUpdate = inngest.createFunction(
     {
-        id : 'update-user-from-clerk'
+        id: 'update-user-from-clerk'
     },
     {
         event: 'clerk/user.updated'
     },
-    async ({event}) => {
-        const {id, first_name, last_name, email, addresses, image_url} = event.data;
+    async ({ event }) => {
+        const { id, first_name, last_name, email_addresses, image_url } = event.data;
         const userData = {
-            id: id,
-            email: email_address[0].email_address,
-            name: first_name + '' + last_name,
+            email: email_addresses[0].email_address,
+            name: first_name + ' ' + last_name,
             imageUrl: image_url,
-        }
-        await dbConnect()
-        await User.findOneAndUpdate(id, userData)
+        };
+        await dbConnect();
+        await User.findOneAndUpdate({ _id: id }, userData);
     }
-)
+);
 
 // inngest function to delete user data from a database
 export const syncUserDeletion = inngest.createFunction(
@@ -58,12 +55,9 @@ export const syncUserDeletion = inngest.createFunction(
     {
         event: 'clerk/user.deleted'
     },
-    async({event}) => {
-        const {id} = event.data;
-        await dbConnect()
-        await User.findOneAndDelete(id)
+    async ({ event }) => {
+        const { id } = event.data;
+        await dbConnect();
+        await User.findOneAndDelete({ _id: id });
     }
-)
-
-
-
+);
