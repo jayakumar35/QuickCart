@@ -10,11 +10,9 @@ export const syncUserCreation = inngest.createFunction(
     {
         id: 'sycn-user-from-clerk'
     },
-    {
-        event: 'clerk/user.created',
-    },
+    { event: 'clerk/user.created' },
     async ({ event }) => {
-        const { id, first_name, last_name, email_addresses, image_url } = event.data;
+        const { id, first_name, last_name, email_addresses, image_url } = event.data
 
         const userData = {
             _id: id,
@@ -28,29 +26,28 @@ export const syncUserCreation = inngest.createFunction(
 );
 
 // inngest function to update user data in a database
-export const sycnUserUpdate = inngest.createFunction(
+export const sycnUserUpdation = inngest.createFunction(
     {
         id: 'update-user-from-clerk'
     },
-    {
-        event: 'clerk/user.updated'
-    },
+    { event: 'clerk/user.updated' },
+
     async ({ event }) => {
-        const { id, first_name, last_name, email_addresses, image_url } = event.data;
+        const { id, first_name, last_name, email_addresses, image_url } = event.data
         const userData = {
             email: email_addresses[0].email_address,
             name: first_name + ' ' + last_name,
             imageUrl: image_url,
         };
-        await dbConnect();
-        await User.findOneAndUpdate({ _id: id }, userData);
+        await dbConnect()
+        await User.findOneAndUpdate(id, userData)
     }
 );
 
 // inngest function to delete user data from a database
 export const syncUserDeletion = inngest.createFunction(
     {
-        id: 'delete-user-from-clerk'
+        id: 'delete-user-with-clerk'
     },
     {
         event: 'clerk/user.deleted'
@@ -58,6 +55,6 @@ export const syncUserDeletion = inngest.createFunction(
     async ({ event }) => {
         const { id } = event.data;
         await dbConnect();
-        await User.findOneAndDelete({ _id: id });
+        await User.findOneAndDelete(id);
     }
 );

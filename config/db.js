@@ -1,32 +1,29 @@
 import mongoose  from "mongoose";
 
-let cache = global.mongoose
+let cached = global.mongoose
 
-if (!cache) {
-    cache = global.mongoose = { conn: null, promise: null }
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null }
 }
 
 async function dbConnect() {
-    if (cache.conn) {
-        return cache.conn
+    if (cached.conn) {
+        return cached.conn
+
     }
 
-    if (!cache.promise) {
+    if (!cached.promise) {
         const opts = {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+          
             bufferCommands: false,
-            bufferMaxEntries: 0,
-            useFindAndModify: false,
-            useCreateIndex: true,
-            useFindAndModify: false,
+          
         }
 
-        cache.promise = mongoose.connect(`${process.env.MONGODB_URI}/qucikcart`,opts).then((mongoose) => {
+        cached.promise = mongoose.connect(`${process.env.MONGODB_URI}/qucikcart`,opts).then(mongoose => {
             return mongoose
         })      
     }
-    cache.conn = await cache.promise    
-    return cache.conn
+    cached.conn = await cached.promise    
+    return cached.conn
 }
-export default dbConnect;
+export default dbConnect
